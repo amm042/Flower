@@ -16,11 +16,12 @@ export class SensorContainers extends React.Component {
     if(this.props.sensors.length > 0){
       return (
       this.props.sensors.map((sensor_i, i) =>
-
-      <Panel header={<Row type="flex" justify="space-around" align="top">
+      <Panel
+        key={"sensor"+i.toString()} 
+        header={<Row type="flex" justify="space-around" align="top">
                       <Col span={10} style={{paddingTop:3}}>
                         <Icon type="share-alt" style={{marginRight: 10}}/>
-                        {sensor_i.displayName} 
+                        {sensor_i.displayName}
                       </Col>
                       <Col span={4}/>
                       <Col span={10}>

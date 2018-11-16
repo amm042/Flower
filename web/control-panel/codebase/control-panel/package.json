@@ -2,10 +2,10 @@
   "name": "control-panel",
   "version": "0.1.0",
   "private": true,
-  "homepage": ".",
+  "homepage": "https://eg.bucknell.edu/~energyhill/control-panel",
   "theme": "./theme.js",
   "dependencies": {
-    "antd": "^3.4.3",
+    "antd": "^3.4.4",
     "axios": "^0.17.1",
     "mdbootstrap": "^4.4.4",
     "octicons": "^7.2.0",
@@ -20,6 +20,7 @@
   "scripts": {
     "start": "PORT=8080 react-scripts start",
     "build": "react-scripts build",
+    "deploy": "react-scripts build && ",
     "test": "react-scripts test --env=jsdom",
     "eject": "react-scripts eject"
   }

@@ -38,7 +38,7 @@ export class ProjectContainer extends React.Component {
                     desc: currProject.desc,
                     scope: currProject.is_private,
                     url: currProject.url,
-                    projectMode: "control", 
+                    projectMode: "control",
                     siteId: currProject.siteId,
                     sites: []
                 }
@@ -146,13 +146,13 @@ export class ProjectContainer extends React.Component {
 
 
                               {this.state.sites.map((site, i) =>
-                                  <Option value={site.siteId}>{site.name}</Option>
+                                  <Option key={site.siteId} value={site.siteId}>{site.name}</Option>
                               )
                             }
 
                             </Select>
                           </FormItem>
-                        </Col> 
+                        </Col>
                         <Button style={{marginLeft: 0, marginTop: 30, marginBottom: 0}} icon="check-circle-o" loading={this.state.iconLoading} onClick={this.updateProjectClick.bind(this)}>
                               Submit Info
                         </Button>
@@ -182,7 +182,7 @@ export class ProjectContainer extends React.Component {
     const currProject = this.props.user.projects[this.props.activeProject];
     console.log(currProject)
     if(currProject !== undefined){
-      
+
       return (
 
 

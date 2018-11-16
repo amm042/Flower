@@ -1,5 +1,6 @@
 # flask /wsgi
-from gevent.wsgi import WSGIServer
+#from gevent.wsgi import WSGIServer
+from gevent.pywsgi import WSGIServer
 from gevent import monkey
 from flask import Flask, request, redirect
 from urllib.parse import urlparse, urlunparse

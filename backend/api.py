@@ -19,7 +19,7 @@ from flask_cors import CORS
 from werkzeug.utils import secure_filename
 
 # patch for gevent cooperative tasking
-from gevent.wsgi import WSGIServer
+from gevent.pywsgi import WSGIServer
 from gevent import monkey
 monkey.patch_all()
 
@@ -51,7 +51,7 @@ def makeApp():
     new_app.register_blueprint(rest_api)
 
     new_app.teardown_appcontext(Db.disconnect)
-    
+
     return new_app
 
 @rest_api.before_request
@@ -67,7 +67,7 @@ def after_request(response):
         pass
     except Exception as e:
         logger.exception('Couldn\'t log response', exc_info=True)
-    return response    
+    return response
 
 @rest_api.route('/read', methods = ['GET'])
 def read():
@@ -101,7 +101,7 @@ def read():
         result = Db.exec_query(sql_string, tuple(condition_values))
     else:
         result = Db.exec_query(sql_string, ())
-    
+
     return json.dumps(result, default = jsonconverter), 200
 
 @rest_api.route('/insert', methods = ['POST'])
@@ -246,9 +246,9 @@ def approve_user():
     except UserDeniedException as e:
         logger.exception('User was denied access from using endpoint', exc_info=True)
         return '', 403
-    
+
     userid = request.values.get('userid')
-    
+
     # get approved user email
     approved_user_email_sql = 'SELECT email FROM user WHERE userId = %s'
     approved_user = Db.exec_query(approved_user_email_sql, (userid,))
@@ -309,7 +309,7 @@ def check_error():
             errorid = error[0]['errorId']
             error_dir_path = os.path.join(app.root_path, ERROR_FOLDER)
             logger.info(error_dir_path)
-            return send_from_directory(directory=error_dir_path, filename=get_error_filename(errorid)), 500 
+            return send_from_directory(directory=error_dir_path, filename=get_error_filename(errorid)), 500
     else:
         return '', 503
 
@@ -369,13 +369,13 @@ def set_admin_status():
     user_ids = split_csv(request.values.get('userids'))
     admin_status = request.values.get('adminstatus')
     assert admin_status in ('0', '1'), 'Admin status is not a valid value (0 or 1)'
-    
+
     try:
         validate_admin(request.values.get('idtoken'))
     except UserDeniedException as e:
         logger.exception('Invalid read endpoint parameters', exc_info=True)
         return str(e), 403
-    
+
     update_admin_status_sql = 'UPDATE user SET isAdmin = %s WHERE userId IN ({})'.format(
         ','.join(['%s']*len(user_ids))
     )
@@ -404,7 +404,7 @@ def get_map_points():
     map_points = []
     for site in sites:
         point = {'latitude': site['latitude'], 'longitude': site['longitude']}
-        
+
         content = '<h1>{0}</h1><p>{1}</p><a href={2}>{2}</a><br />'.format(site['name'], site['description'], site['link'])
         if site['siteId'] in project_site_dict.keys():
             project_links = '<div><ul>'
@@ -432,7 +432,7 @@ def get_all_others_projects():
     user_project_ids = [project['projectId'] for project in user_projects]
     # get all projects that aren't owned by the user and and aren't "1" which is the Unclaimed project
     not_user_projects = [project for project in all_projects if project['projectId'] not in user_project_ids and project['projectId'] is not 1]
-    
+
     return json.dumps(not_user_projects, default = jsonconverter), 200
 
 def get_code_filename(uploadid):
@@ -481,7 +481,7 @@ def handle_codeupload_response(deviceid, error_msg):
 def validate_table_name(table_name):
     # pull list of table names
     tables_result = Db.exec_query('SHOW TABLES')
-    
+
     valid_tables = []
     for x in tables_result:
         valid_tables += x.values()
@@ -532,7 +532,7 @@ def build_basic_condition(lhs_list, rhs_list):
         else: # the item is 'null'
             statements.append(lhs_list[i] + ' IS null')
             null_indicies.append(i)
-    
+
     # removes the null values in the right hand side list
     for index in reversed(null_indicies):
         rhs_list.pop(index)
@@ -630,7 +630,7 @@ def construct_profile_json(google_id):
             'desc': project['description'],
             'is_private': project['isPrivate'],
             'url': project['url'],
-            'siteId': project['siteId'], 
+            'siteId': project['siteId'],
             'devices': devices
         }
 
@@ -698,7 +698,7 @@ def build_all_sensors_dict():
                 devices_dict[project_id] += sensors_dict[device_id]
 
     for project in projects:
-        sensors = devices_dict[project['projectId']] if project['projectId'] in devices_dict.keys() else [] 
+        sensors = devices_dict[project['projectId']] if project['projectId'] in devices_dict.keys() else []
 
         # construct project dict
         project_dict = {
@@ -727,7 +727,9 @@ def build_condition(column_name, list_of_vals):
     )
 
 def get_idinfo(id_token):
+
     idinfo = id_token_lib.verify_oauth2_token(id_token, requests.Request(), CLIENT_ID)
+
 
     if idinfo['iss'] not in ['accounts.google.com', 'https://accounts.google.com']:
         raise ValueError('Invalid token')

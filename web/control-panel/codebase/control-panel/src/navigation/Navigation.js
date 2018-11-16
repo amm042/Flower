@@ -15,7 +15,15 @@ class Navigation extends React.Component {
     let googleUser = localStorage.getItem('gUser');
 
     if(googleUser){
-      googleUser = JSON.parse(googleUser)
+      try{
+        googleUser = JSON.parse(googleUser)
+      } catch(e)
+      {
+        //corrupt local storage?
+        localStorage.clear();
+        isAuth = false;
+        localStorage.setItem('isAuth', false)
+      }
     }
     else{
       isAuth = false;
@@ -28,7 +36,7 @@ class Navigation extends React.Component {
       researcher: undefined
     }; //navigation keeps track of authentication state
 
-    //navigation controls login/logout 
+    //navigation controls login/logout
     this.handleLogin =  Requests.loadProfile.bind(this);
     this.handleLogout = this.handleLogout.bind(this);
 

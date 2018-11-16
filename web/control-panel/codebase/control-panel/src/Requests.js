@@ -26,11 +26,21 @@ class Requests {
 
     const scope = this;
     xhr.onload = function() {
+      console.log("loadProfile.onload: response:", xhr.response)
       localStorage.setItem('gUser', JSON.stringify(googleUser));
       if (xhr.response == null) {
         localStorage.setItem('isAuth', false)
-        scope.setState({isAuthenticated: false, researcher: null, gUser: googleUser})
-      } 
+        localStorage.setItem('gUser', undefined);
+        //scope.setState({isAuthenticated: false, researcher: null, gUser: googleUser})
+        scope.setState({isAuthenticated: false, researcher: null, gUser: null})
+
+        // window.gapi.auth2.signOut()
+        //   .then(()=>{
+        //     localStorage.setItem('gUser', undefined);
+        //     localStorage.setItem('isAuth', false);
+        //     this.setState({ gUser: null, isAuthenticated: false});
+        //   });
+      }
       else {
         user_id = xhr.response.id
         localStorage.setItem('isAuth', true);
@@ -293,7 +303,7 @@ class Requests {
 
     xhr.onload = function() {
     };
-    xhr.send(form_data);     
+    xhr.send(form_data);
   }
 
   deleteProject(projectId){
@@ -309,7 +319,7 @@ class Requests {
 
     xhr.onload = function() {
     };
-    xhr.send(form_data);    
+    xhr.send(form_data);
   }
 
   deleteUser(userEmail){
@@ -325,7 +335,7 @@ class Requests {
 
     xhr.onload = function() {
     };
-    xhr.send(form_data); 
+    xhr.send(form_data);
   }
 
   updateUserAdmin(userEmail){

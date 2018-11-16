@@ -7,7 +7,7 @@ const Option = Select.Option;
 
 
 export class AddProject extends React.Component {
-  
+
   constructor(props){
     super(props)
 
@@ -21,7 +21,7 @@ export class AddProject extends React.Component {
     this.createProject = Requests.createProject.bind(this);
     this.linkProject = Requests.linkProject.bind(this);
     this.getAllOtherProjects = Requests.getAllOtherProjects.bind(this);
-    
+
     this.handleProjectChange = this.handleProjectChange.bind(this);
     this.handleJoinProject = this.handleJoinProject.bind(this);
     this.handleCreateProject = this.handleCreateProject.bind(this);
@@ -106,7 +106,7 @@ export class AddProject extends React.Component {
                 >
                   <Select defaultValue={this.state.activeProjectId} style={{ width: 200 }} onChange={this.handleProjectChange}>
                   {this.state.otherProjects.map((project, i) =>
-                    <Option value={project.projectId}>{project.name}</Option>
+                    <Option key={project.projectId} value={project.projectId}>{project.name}</Option>
                     )
                   }
                   </Select>
